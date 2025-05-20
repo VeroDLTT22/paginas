@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía Interactiva: Análisis de Mercado Yadatex</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light grey background */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .kpi-value {
+            font-size: 2.5rem; /* 40px */
+            line-height: 1.2;
+            font-weight: 700;
+        }
+        .kpi-label {
+            font-size: 0.875rem; /* 14px */
+            line-height: 1.25rem; /* 20px */
+            color: #4A5568; /* gray-700 */
+        }
+        .section-title {
+            font-size: 1.875rem; /* 30px */
+            line-height: 2.25rem; /* 36px */
+            font-weight: 700;
+            margin-bottom: 1rem; /* 16px */
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.5rem; /* 8px */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem; /* 24px */
+            margin-bottom: 1.5rem; /* 24px */
+        }
+        .flow-chart-item {
+            border: 2px solid #FF8C00; /* Energetic Orange */
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            text-align: center;
+            background-color: #FFF8DC; /* Cornsilk - light yellow for contrast */
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flow-chart-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #FF8C00; /* Energetic Orange */
+            margin: 0 0.5rem;
+        }
+        .brand-tag {
+            display: inline-block;
+            background-color: #008080; /* Teal */
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+        }
+        .licence-tag {
+            display: inline-block;
+            background-color: #FFD700; /* Yellow */
+            color: #333;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+        }
+        /* Energetic & Playful Palette: Orange: #FF8C00, Yellow: #FFD700, Teal: #008080, Purple: #800080, Pink: #FF69B4 */
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Narrative Plan:
+    1.  Introduction/Hook: Yadatex - Líder en Accesorios Licenciados.
+    2.  Company Overview: Datos clave (fundación, CEO, HQ, Puntos de Venta).
+    3.  Market Position & Growth: "Top 5", crecimiento "geek".
+    4.  Product Portfolio: Categorías, +60 Licencias, Marcas Propias.
+    5.  Business Model & Channels: Retail, E-commerce, B2B.
+    6.  Operational Strength: Plantas México & Asia.
+    7.  Financial Highlights (Qualitative): Inversión Dila Capital.
+    8.  Strategic Opportunities: Expansión, e-commerce, mercado geek.
+    9.  Key Risks (Briefly): Dependencia de licencias.
+    10. Conclusion: Atractivo para M&A.
+    -->
+
+    <!-- Visualization Choices Plan:
+    - Intro: Large text. Goal: Inform. Method: HTML/Tailwind.
+    - Company Overview: Styled list/cards with Unicode icons. Goal: Inform. Method: HTML/Tailwind.
+    - Market Position: "Single Big Number" (Top 5), Bar Chart (Geek Growth - illustrative). Goal: Inform/Compare. Method: HTML/Tailwind, Chart.js (Canvas). NO SVG.
+    - Product Portfolio: Donut Chart (License vs Own Brand - illustrative), Icon list (categories). Goal: Inform/Compare. Method: Chart.js (Canvas), HTML/Tailwind with Unicode. NO SVG.
+    - Business Model: Flow Chart. Goal: Organize. Method: HTML/CSS/Tailwind. NO SVG, NO MERMAID JS.
+    - Operational Strength: Styled HTML with Unicode icons. Goal: Inform. Method: HTML/Tailwind.
+    - Financial Highlights: "Single Big Number" / Timeline element. Goal: Inform. Method: HTML/Tailwind.
+    - Strategic Opportunities: Styled List. Goal: Organize. Method: HTML/Tailwind.
+    - Key Risks: Text callout with Unicode icon. Goal: Inform. Method: HTML/Tailwind.
+    -->
+
+    <header class="bg-gradient-to-r from-[#FF8C00] to-[#FFD700] py-8 text-white text-center shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-5xl font-bold">YADATEX: LÍDER EN INNOVACIÓN Y ACCESORIOS LICENCIADOS</h1>
+            <p class="mt-2 text-lg md:text-xl">Un Análisis Profundo del Mercado y Oportunidades Estratégicas</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="company-overview" class="mb-12">
+            <h2 class="section-title text-[#008080]">Panorama General de Yadatex</h2>
+            <p class="mb-6 text-lg text-gray-700">
+                Grupo Yadatex S.A. de C.V. se ha consolidado como un jugador clave en el mercado mexicano de accesorios, especializándose en el diseño, fabricación y comercialización de mochilas, bolsos y productos relacionados. Su éxito se fundamenta en un robusto portafolio de licencias de alto perfil y marcas propias estratégicamente posicionadas.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="card text-center">
+                    <div class="text-4xl mb-2">🗓️</div>
+                    <div class="kpi-value">2008</div>
+                    <p class="kpi-label">Año de Fundación (Bordado)</p>
+                    <p class="text-sm text-gray-600">(Mochilas desde 2012)</p>
+                </div>
+                <div class="card text-center">
+                    <div class="text-4xl mb-2">👤</div>
+                    <div class="text-xl font-semibold text-[#800080]">David Yapur</div>
+                    <p class="kpi-label">CEO y Fundador</p>
+                </div>
+                <div class="card text-center">
+                    <div class="text-4xl mb-2">📍</div>
+                    <div class="text-xl font-semibold text-[#FF69B4]">CDMX, México</div>
+                    <p class="kpi-label">Sede Corporativa</p>
+                </div>
+                <div class="card text-center">
+                    <div class="text-4xl mb-2">🛍️</div>
+                    <div class="kpi-value">+8,000</div>
+                    <p class="kpi-label">Puntos de Venta en México</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="market-position" class="mb-12">
+            <h2 class="section-title text-[#FF8C00]">Posicionamiento en el Mercado y Crecimiento</h2>
+            <p class="mb-6 text-lg text-gray-700">
+                Yadatex ha logrado un notable posicionamiento en México, destacándose en el segmento escolar y experimentando un crecimiento acelerado en el nicho "geek". Su estrategia de diseño auténtico y licencias populares impulsa su expansión.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-3 text-[#008080]">Top en Accesorios Escolares</h3>
+                    <div class="flex items-center">
+                        <div class="text-6xl mr-4">🏆</div>
+                        <div>
+                            <p class="kpi-value text-[#008080]">Top 5</p>
+                            <p class="kpi-label">Marcas de mochilas y accesorios escolares en retail (México, 2018).</p>
+                        </div>
+                    </div>
+                     <p class="mt-3 text-sm text-gray-600">Este posicionamiento subraya la fuerte presencia de Yadatex en un mercado clave y competitivo.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-3 text-[#FF8C00]">Crecimiento Exponencial "Geek"</h3>
+                    <div class="chart-container" style="height: 250px; max-height: 300px;">
+                        <canvas id="geekMarketGrowthChart"></canvas>
+                    </div>
+                    <p class="mt-3 text-sm text-gray-600">El segmento "geek" ha reportado crecimientos de dos y hasta tres dígitos anuales, demostrando ser un motor clave para la empresa.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="product-portfolio" class="mb-12">
+            <h2 class="section-title text-[#800080]">Portafolio de Productos y Marcas</h2>
+            <p class="mb-6 text-lg text-gray-700">
+                El portafolio de Yadatex es extenso y diversificado, incluyendo "herramientas para el transporte de objetos" que van desde mochilas y loncheras hasta maletas y accesorios para mascotas. La fortaleza radica en su gestión de más de 60 licencias y el desarrollo de marcas propias.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-3 text-[#800080]">Fuerza de las Licencias vs. Marcas Propias</h3>
+                     <div class="chart-container" style="height: 280px; max-height: 350px;">
+                        <canvas id="brandLicenseChart"></canvas>
+                    </div>
+                    <p class="mt-3 text-sm text-gray-600">Una gran parte del catálogo se apoya en licencias populares, complementado por marcas propias estratégicas que buscan nichos específicos.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-3 text-[#800080]">Marcas Propias Destacadas</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="brand-tag">Airpack</span>
+                            <p class="text-sm text-gray-700">Línea ejecutiva para profesionales y regalos corporativos. Enfocada en funcionalidad y diseño sobrio.</p>
+                        </div>
+                        <div>
+                            <span class="brand-tag">Keepack</span>
+                            <p class="text-sm text-gray-700">Marca paraguas para el retail masivo, abarcando una amplia gama de licencias para el segmento escolar y familiar.</p>
+                        </div>
+                        <div>
+                            <span class="brand-tag">Common Nation</span>
+                            <p class="text-sm text-gray-700">Enfocada en el nicho "geek" especializado y coleccionistas, con diseños premium y licencias de culto.</p>
+                        </div>
+                    </div>
+                     <h3 class="text-xl font-semibold mt-4 mb-2 text-[#800080]">Licencias Populares (Ejemplos)</h3>
+                     <div class="flex flex-wrap">
+                        <span class="licence-tag">Disney</span> <span class="licence-tag">Marvel</span> <span class="licence-tag">Star Wars</span> <span class="licence-tag">Naruto</span> <span class="licence-tag">Dragon Ball</span> <span class="licence-tag">Harry Potter</span>
+                     </div>
+                </div>
+            </div>
+            <div class="card mt-6">
+                <h3 class="text-xl font-semibold mb-3 text-[#800080]">Principales Categorías de Productos</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-center">
+                    <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">🎒</span><p class="text-sm">Mochilas</p></div>
+                    <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">🥪</span><p class="text-sm">Loncheras</p></div>
+                    <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">✏️</span><p class="text-sm">Estucheras</p></div>
+                    <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">🧳</span><p class="text-sm">Maletas</p></div>
+                    <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">🍼</span><p class="text-sm">Pañaleras</p></div>
+                    <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">🏋️</span><p class="text-sm">Gymbags</p></div>
+                    <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">🐶</span><p class="text-sm">Para Mascotas</p></div>
+                </div>
+                 <p class="mt-3 text-sm text-gray-600">Esta diversificación permite a Yadatex atender a un amplio espectro de necesidades y perfiles de consumidores.</p>
+            </div>
+        </section>
+
+        <section id="business-model" class="mb-12">
+            <h2 class="section-title text-[#008080]">Modelo de Negocio y Canales de Venta</h2>
+            <p class="mb-6 text-lg text-gray-700">
+                Yadatex opera un modelo integrado que abarca diseño, fabricación y comercialización multicanal. Su estrategia se enfoca en llevar productos de calidad y licencias deseadas al consumidor a través de una red diversificada.
+            </p>
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4 text-center text-[#008080]">Flujo de Valor y Canales Principales</h3>
+                <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="flow-chart-item w-full md:w-1/4">Diseño y Licenciamiento</div>
+                    <div class="flow-chart-arrow hidden md:flex">➡️</div>
+                    <div class="block md:hidden text-3xl text-center text-[#FF8C00]">⬇️</div>
+                    <div class="flow-chart-item w-full md:w-1/4">Fabricación (México y Asia)</div>
+                    <div class="flow-chart-arrow hidden md:flex">➡️</div>
+                    <div class="block md:hidden text-3xl text-center text-[#FF8C00]">⬇️</div>
+                    <div class="flow-chart-item w-full md:w-1/4">Distribución Multicanal</div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 border border-gray-200 rounded-lg bg-white">
+                        <h4 class="font-semibold text-lg text-[#FF8C00]">Retail Físico</h4>
+                        <p class="text-sm text-gray-600">Más de 8,000 puntos de venta. Socios clave: Liverpool, Office Depot, Lumen.</p>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-lg bg-white">
+                        <h4 class="font-semibold text-lg text-[#FFD700]">E-commerce</h4>
+                        <p class="text-sm text-gray-600">Tienda propia (yadatex.com) y Marketplaces (Mercado Libre). Logística con Melonn.</p>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-lg bg-white">
+                        <h4 class="font-semibold text-lg text-[#FF69B4]">Mayorista B2B</h4>
+                        <p class="text-sm text-gray-600">Distribuidores independientes y ventas corporativas (Airpack).</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-600">Esta estrategia multicanal maximiza la cobertura y el alcance a diversos segmentos de clientes.</p>
+            </div>
+        </section>
+
+        <section id="operational-strength" class="mb-12">
+             <h2 class="section-title text-[#FF69B4]">Fortaleza Operativa y Financiera</h2>
+            <p class="mb-6 text-lg text-gray-700">
+                La capacidad de producción propia y las inversiones estratégicas son pilares de la fortaleza operativa y el potencial de crecimiento de Yadatex.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-3 text-[#FF69B4]">Producción Global</h3>
+                     <div class="flex items-center justify-around text-center">
+                        <div>
+                            <div class="text-5xl">🇲🇽</div>
+                            <p class="font-semibold mt-1">Planta en México</p>
+                            <p class="text-xs text-gray-500">Ensamblaje, respuesta rápida, mercado local.</p>
+                        </div>
+                        <div>
+                            <div class="text-5xl">🌏</div>
+                            <p class="font-semibold mt-1">Plantas en Asia</p>
+                            <p class="text-xs text-gray-500">Producción masiva, optimización de costos.</p>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">Esta estructura dual ofrece flexibilidad, diversificación de riesgos y optimización de la cadena de suministro.</p>
+                </div>
+                 <div class="card">
+                    <h3 class="text-xl font-semibold mb-3 text-[#FF69B4]">Inversión Estratégica</h3>
+                    <div class="flex items-center">
+                        <div class="text-5xl mr-4">💰</div>
+                        <div>
+                            <p class="text-2xl font-bold text-[#FF69B4]">Dila Capital</p>
+                            <p class="kpi-label">Adquirió participación en Yadatex (Junio 2023).</p>
+                        </div>
+                    </div>
+                    <p class="mt-3 text-sm text-gray-600">La inversión de un fondo de Venture Capital como Dila Capital valida el modelo de negocio y el potencial de crecimiento, aportando capital y apoyo estratégico.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategic-opportunities" class="mb-12">
+            <h2 class="section-title text-[#FFD700]">Oportunidades Estratégicas Clave</h2>
+            <p class="mb-6 text-lg text-gray-700">
+                Yadatex se encuentra en una posición privilegiada para capitalizar diversas oportunidades de crecimiento, impulsadas por sus fortalezas actuales y la dinámica del mercado.
+            </p>
+            <div class="card">
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-2xl mr-3 text-[#FFD700]">🌍</span>
+                        <div>
+                            <h4 class="font-semibold text-lg">Expansión Geográfica</h4>
+                            <p class="text-sm text-gray-600">Consolidación en Chile, crecimiento en Latinoamérica y potencial exploración de mercados globales.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-2xl mr-3 text-[#FFD700]">💻</span>
+                        <div>
+                            <h4 class="font-semibold text-lg">Crecimiento del E-commerce</h4>
+                            <p class="text-sm text-gray-600">Potenciar ventas online (tienda propia y marketplaces) con logística optimizada.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-2xl mr-3 text-[#FFD700]">🎮</span>
+                        <div>
+                            <h4 class="font-semibold text-lg">Profundización en Mercado "Geek"</h4>
+                            <p class="text-sm text-gray-600">Capitalizar la alta demanda con nuevas licencias y diseños auténticos.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-2xl mr-3 text-[#FFD700]">🏷️</span>
+                        <div>
+                            <h4 class="font-semibold text-lg">Fortalecimiento de Marcas Propias</h4>
+                            <p class="text-sm text-gray-600">Desarrollar Airpack, Keepack y Common Nation para mayor valor y diversificación.</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start">
+                        <span class="text-2xl mr-3 text-[#FFD700]">🏭</span>
+                        <div>
+                            <h4 class="font-semibold text-lg">Expansión de Manufactura para Terceros</h4>
+                            <p class="text-sm text-gray-600">Optimizar capacidad instalada y generar ingresos adicionales.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        
+        <section id="key-risks" class="mb-12">
+            <h2 class="section-title" style="color: #D32F2F;">Consideraciones y Riesgos Potenciales</h2>
+             <p class="mb-6 text-lg text-gray-700">
+                Si bien las oportunidades son significativas, una evaluación completa para M&A debe considerar ciertos riesgos inherentes al modelo de negocio y al mercado.
+            </p>
+            <div class="card border-l-4 border-red-500 bg-red-50">
+                <div class="flex">
+                    <div class="py-1"><span class="text-3xl">⚠️</span></div>
+                    <div class="ml-4">
+                        <h4 class="text-lg font-semibold text-red-700">Dependencia de Licencias de Terceros</h4>
+                        <p class="text-sm text-red-600">El núcleo del negocio se basa en más de 60 licencias. La no renovación, el aumento de costos de royalties o cambios en la popularidad de las franquicias representan un riesgo clave. La diversificación a través de marcas propias es una mitigación importante.</p>
+                         <h4 class="text-lg font-semibold text-red-700 mt-3">Gestión de Cadena de Suministro Global</h4>
+                        <p class="text-sm text-red-600">La operación de plantas en México y Asia, junto con una extensa red de distribución, implica una cadena de suministro compleja con riesgos logísticos, de costos y geopolíticos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="text-center py-8">
+            <h2 class="section-title text-[#008080]">Conclusión: Una Oportunidad Atractiva</h2>
+            <p class="text-xl text-gray-700 max-w-3xl mx-auto">
+                Grupo Yadatex S.A. de C.V. representa una oportunidad de inversión convincente en el dinámico sector de bienes de consumo. Su liderazgo en productos licenciados, capacidad de innovación en el mercado "geek", sólida red de distribución y potencial de crecimiento la posicionan como un actor valioso con una trayectoria de éxito y una visión clara hacia el futuro.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center p-6 mt-12">
+        <p class="text-sm">&copy; <span id="currentYear"></span> Análisis de Mercado Yadatex. Infografía generada con fines ilustrativos.</p>
+        <p class="text-xs mt-1">Datos basados en el informe "Ficha Técnica Confidencial: Grupo Yadatex S.A. de C.V. – Análisis para Adquisición".</p>
+    </footer>
+    
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const processLabel = (label) => {
+            if (typeof label === 'string' && label.length > 16) {
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if ((currentLine + word).length > 16 && currentLine.length > 0) {
+                        lines.push(currentLine.trim());
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine += word + ' ';
+                    }
+                }
+                lines.push(currentLine.trim());
+                return lines;
+            }
+            return label;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        };
+
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 10
+                        },
+                        callback: function(value, index, values) {
+                            const label = this.getLabelForValue(value);
+                            return processLabel(label);
+                        }
+                    }
+                }
+            }
+        };
+        
+        const commonPieDonutOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                     labels: {
+                        font: {
+                            size: 10
+                        },
+                        boxWidth: 20,
+                        padding: 10,
+                        generateLabels: function(chart) {
+                            const data = chart.data;
+                            if (data.labels.length && data.datasets.length) {
+                                return data.labels.map(function(label, i) {
+                                    const meta = chart.getDatasetMeta(0);
+                                    const style = meta.controller.getStyle(i);
+                                    const labelText = Array.isArray(label) ? label.join(' ') : label;
+                                    return {
+                                        text: labelText,
+                                        fillStyle: style.backgroundColor,
+                                        strokeStyle: style.borderColor,
+                                        lineWidth: style.borderWidth,
+                                        hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
+                                        index: i
+                                    };
+                                });
+                            }
+                            return [];
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback,
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += context.parsed + '%';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+
+        const geekMarketGrowthCtx = document.getElementById('geekMarketGrowthChart').getContext('2d');
+        new Chart(geekMarketGrowthCtx, {
+            type: 'bar',
+            data: {
+                labels: [processLabel('Año 1 (Base)'), processLabel('Año 2 (+XX%)'), processLabel('Año 3 (+XXX%)')],
+                datasets: [{
+                    label: 'Crecimiento Ingresos Segmento Geek (Ilustrativo)',
+                    data: [100, 180, 350], 
+                    backgroundColor: ['#FFD700', '#FF8C00', '#FF69B4'],
+                    borderColor: ['#B8860B', '#CD5C5C', '#C71585'],
+                    borderWidth: 1
+                }]
+            },
+            options: commonChartOptions
+        });
+
+        const brandLicenseCtx = document.getElementById('brandLicenseChart').getContext('2d');
+        new Chart(brandLicenseCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [processLabel('Productos Licenciados'), processLabel('Marcas Propias Yadatex')],
+                datasets: [{
+                    label: 'Distribución del Portafolio (Estimado)',
+                    data: [75, 25], 
+                    backgroundColor: ['#008080', '#800080'],
+                    hoverOffset: 4
+                }]
+            },
+            options: commonPieDonutOptions
+        });
+    </script>
+
+</body>
+</html>
