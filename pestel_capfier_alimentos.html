@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Estratégico Completo - Grupo Cimarrón (Alimentos)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            padding: 25px; 
+            background-color: #f8f9fa; 
+            color: #343a40; 
+            line-height: 1.6;
+        }
+        .main-title-section {
+            text-align: center; 
+            color: #004a99;
+            margin-bottom: 20px; 
+            padding-bottom: 15px;
+            border-bottom: 3px solid #007bff; 
+        }
+        .main-title-section h1 {
+            font-size: 2.2em;
+            margin-bottom: 5px;
+        }
+        .main-title-section h2 {
+            font-size: 1.3em;
+            color: #6c757d;
+            font-weight: normal;
+        }
+
+        /* Estilos PESTEL y CAPFIR Cards */
+        .analysis-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 25px; 
+            justify-content: center; 
+            margin-bottom: 40px;
+        }
+        .analysis-card { 
+            background-color: #ffffff; 
+            border: 1px solid #dee2e6; 
+            border-radius: 10px; 
+            padding: 25px; 
+            width: 330px; 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            display: flex;
+            flex-direction: column;
+        }
+        .analysis-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12); 
+        }
+        .analysis-card h2 { 
+            font-size: 1.7em; 
+            color: #007bff; 
+            margin-top: 0; 
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e9ecef; 
+            padding-bottom: 12px; 
+            text-align: center;
+        }
+        .analysis-card h3 { 
+            margin-top: 18px; 
+            margin-bottom: 10px;
+            color: #495057; 
+            font-size: 1.15em; 
+        }
+        .summary-counts {
+            font-size: 1.05em; 
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .summary-counts .threat-count, .summary-counts .weakness-count { 
+            font-weight: bold; 
+            color: #dc3545; 
+        }
+        .summary-counts .opportunity-count, .summary-counts .strength-count { 
+            font-weight: bold; 
+            color: #28a745; 
+        }
+        .summary-counts .strength-count {
+             color: #007bff; 
+        }
+         .summary-counts .weakness-count { 
+             color: #6f42c1; 
+        }
+
+        ul { 
+            list-style-type: none; 
+            padding-left: 0; 
+            margin-bottom: 0;
+            flex-grow: 1; 
+        }
+        li { 
+            margin-bottom: 10px; 
+            padding-left: 28px; 
+            position: relative; 
+            font-size: 0.9em; 
+        }
+        .key-item.threat li::before { 
+            content: '🔴'; position: absolute; left: 0; font-size: 1.2em;
+        }
+        .key-item.opportunity li::before { 
+            content: '🟢'; position: absolute; left: 0; font-size: 1.2em;
+        }
+        .key-item.strength li::before { 
+            content: '🔵'; position: absolute; left: 0; font-size: 1.2em;
+        }
+        .key-item.weakness li::before { 
+            content: '🟣'; position: absolute; left: 0; font-size: 1.2em;
+        }
+        .key-item-desc { 
+            font-size: 0.8em; 
+            color: #6c757d; 
+            display: block;
+            margin-top: 3px;
+        }
+        .card-footer {
+            margin-top: auto; 
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+            font-size: 0.75em; 
+            color: #6c757d;
+            text-align: center;
+        }
+
+        /* Estilos Gráficas FODA */
+        .foda-charts-section-title {
+            text-align: center;
+            font-size: 2em;
+            color: #004a99;
+            margin-top: 50px;
+            margin-bottom: 10px;
+        }
+        .foda-charts-container-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px; 
+            margin-bottom: 30px;
+        }
+        .foda-chart-container {
+            width: 100%; 
+            max-width: 48%; 
+            min-width: 350px; 
+            height: 450px; /* <<< ALTURA FIJA AÑADIDA AQUÍ <<< */
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px; 
+            display: flex; /* Para centrar el canvas si es necesario */
+            flex-direction: column; /* Para que el h3 y el canvas se alineen verticalmente */
+            justify-content: flex-start; /* Alinea el contenido (h3, canvas) arriba */
+            align-items: center; /* Centra el canvas horizontalmente si su width es menor */
+        }
+        .foda-chart-container h3 {
+            text-align: center;
+            color: #007bff;
+            font-size: 1.3em; 
+            margin-bottom: 15px;
+            width: 100%; /* Asegura que el título ocupe el ancho */
+        }
+        /* El canvas en sí mismo no necesita height aquí, Chart.js lo ajustará al contenedor */
+        .foda-chart-container canvas {
+             max-width: 100%; /* Asegura que el canvas no se desborde del contenedor */
+             max-height: calc(100% - 40px); /* Deja espacio para el título h3 */
+        }
+
+         @media (max-width: 768px) {
+            .foda-chart-container {
+                max-width: 95%; 
+                height: 400px; /* Altura ligeramente menor para móviles */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-title-section">
+        <h1>Análisis Estratégico Integral</h1>
+        <h2>Grupo Cimarrón (División Alimentos)</h2>
+    </div>
+
+    <div class="main-title-section">
+        <h1 style="font-size: 1.8em; color: #007bff; border-bottom: none; margin-bottom:0;">Análisis Externo PESTEL</h1>
+    </div>
+    <div class="analysis-container pestel-container">
+        <div class="analysis-card pestel-card">
+            <h2>Político</h2>
+            <div class="summary-counts">
+                <span class="threat-count">13 Amenazas</span> | <span class="opportunity-count">7 Oportunidades</span>
+            </div>
+            <div class="key-item threat">
+                <h3>Amenazas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>P1 Impacto de la estabilidad política:</strong>
+                        <span class="key-item-desc">Incertidumbre que afecta inversiones y cadena de suministro.</span>
+                    </li>
+                    <li><strong>P18 Políticas de energía y sostenibilidad:</strong>
+                        <span class="key-item-desc">Cambios en costos energéticos y adaptación a normativas.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item opportunity">
+                <h3>Oportunidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>P6 Riesgos de conflictos o disturbios:</strong>
+                        <span class="key-item-desc">Operar en zonas de bajo riesgo o con mitigación efectiva.</span>
+                    </li>
+                    <li><strong>P4 Acuerdos comerciales internacionales:</strong>
+                        <span class="key-item-desc">Acceso a mercados de exportación e importación de insumos.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Político (Externo)</div>
+        </div>
+
+        <div class="analysis-card pestel-card">
+            <h2>Económico</h2>
+            <div class="summary-counts">
+                <span class="threat-count">10 Amenazas</span> | <span class="opportunity-count">10 Oportunidades</span>
+            </div>
+            <div class="key-item threat">
+                <h3>Amenazas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>E1 Inflación:</strong>
+                        <span class="key-item-desc">Aumento de costos y reducción del poder adquisitivo.</span>
+                    </li>
+                    <li><strong>E17 Impacto de crisis económicas:</strong>
+                        <span class="key-item-desc">Contracción de demanda y disrupciones.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item opportunity">
+                <h3>Oportunidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>E8 Aumento de la demanda (de alimentos):</strong>
+                        <span class="key-item-desc">Beneficio directo en ingresos y crecimiento.</span>
+                    </li>
+                    <li><strong>E11 Estabilidad financiera del mercado:</strong>
+                        <span class="key-item-desc">Confianza y acceso a financiamiento.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Económico (Externo)</div>
+        </div>
+
+        <div class="analysis-card pestel-card">
+            <h2>Social</h2>
+            <div class="summary-counts">
+                <span class="threat-count">9 Amenazas</span> | <span class="opportunity-count">11 Oportunidades</span>
+            </div>
+            <div class="key-item threat">
+                <h3>Amenazas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>S7 Distribución de la riqueza:</strong>
+                        <span class="key-item-desc">Polarización del mercado debido a desigualdad.</span>
+                    </li>
+                     <li><strong>S6 Estructura de edad de la población:</strong>
+                        <span class="key-item-desc">Cambios en la demanda por envejecimiento o bono joven.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item opportunity">
+                <h3>Oportunidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>S4 Tendencias de consumo:</strong>
+                        <span class="key-item-desc">Adaptación a demandas de alimentos saludables, convenientes, éticos.</span>
+                    </li>
+                    <li><strong>S14 Tendencias de salud y bienestar:</strong>
+                        <span class="key-item-desc">Creciente demanda de alimentos funcionales y saludables.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Social (Externo)</div>
+        </div>
+
+        <div class="analysis-card pestel-card">
+            <h2>Tecnológico</h2>
+            <div class="summary-counts">
+                <span class="threat-count">4 Amenazas</span> | <span class="opportunity-count">11 Oportunidades</span>
+            </div>
+            <div class="key-item threat">
+                <h3>Amenazas Clave (Ejemplos):</h3>
+                <ul>
+                     <li><strong>T15 Seguridad cibernética:</strong>
+                        <span class="key-item-desc">Necesidad de inversión constante para proteger datos y operaciones.</span>
+                    </li>
+                    <li><strong>T14 Impacto de la tecnología en empleo:</strong>
+                        <span class="key-item-desc">Necesidad de recapacitación por automatización.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item opportunity">
+                <h3>Oportunidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>T7 Avances en TIC:</strong>
+                        <span class="key-item-desc">Base para digitalización, e-commerce y eficiencia.</span>
+                    </li>
+                    <li><strong>T9 Innovaciones en logística y automatización:</strong>
+                        <span class="key-item-desc">Optimización de almacenaje, transporte y procesos.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Tecnológico (Externo)</div>
+        </div>
+
+        <div class="analysis-card pestel-card">
+            <h2>Ecológico</h2>
+            <div class="summary-counts">
+                <span class="threat-count">9 Amenazas</span> | <span class="opportunity-count">6 Oportunidades</span>
+            </div>
+            <div class="key-item threat">
+                <h3>Amenazas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>EC9 Impacto del cambio climático:</strong>
+                        <span class="key-item-desc">Afectaciones a agricultura, agua y cadena de suministro.</span>
+                    </li>
+                    <li><strong>EC7 Políticas sobre plásticos y empaques:</strong>
+                        <span class="key-item-desc">Costos de sustitución y adaptación a normativas.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item opportunity">
+                <h3>Oportunidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>EC1 Consideraciones sobre sostenibilidad:</strong>
+                        <span class="key-item-desc">Integración como imperativo de mercado y regulatorio.</span>
+                    </li>
+                    <li><strong>EC10 Adopción de tecnologías verdes:</strong>
+                        <span class="key-item-desc">Reducción de costos e impacto ambiental, mejora de imagen.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Ecológico (Externo)</div>
+        </div>
+
+        <div class="analysis-card pestel-card">
+            <h2>Legal</h2>
+            <div class="summary-counts">
+                <span class="threat-count">16 Amenazas</span> | <span class="opportunity-count">4 Oportunidades</span>
+            </div>
+            <div class="key-item threat">
+                <h3>Amenazas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>L14 Responsabilidad de productos:</strong>
+                        <span class="key-item-desc">Riesgo por daños causados por productos defectuosos.</span>
+                    </li>
+                    <li><strong>L1 Leyes laborales:</strong>
+                        <span class="key-item-desc">Costos de cumplimiento y gestión de personal.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item opportunity">
+                <h3>Oportunidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>L9 Regulaciones sectoriales específicas:</strong>
+                        <span class="key-item-desc">Cumplimiento como garantía de calidad.</span>
+                    </li>
+                     <li><strong>L7 Equidad de género y anti-discriminación:</strong>
+                        <span class="key-item-desc">Mejora del clima laboral y reputación.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Legal (Externo)</div>
+        </div>
+    </div>
+
+    <hr style="margin: 40px 5%; border: 0; border-top: 2px dashed #007bff;">
+
+    <div class="main-title-section">
+        <h1 style="font-size: 1.8em; color: #007bff; border-bottom: none; margin-bottom:0;">Análisis Interno CAPFIR</h1>
+    </div>
+    <div class="analysis-container capfir-container">
+        <div class="analysis-card capfir-card">
+            <h2>Capital</h2>
+            <div class="summary-counts">
+                <span class="weakness-count">12 Debilidades</span> | <span class="strength-count">8 Fortalezas</span>
+            </div>
+            <div class="key-item weakness">
+                <h3>Debilidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>C6 Presupuesto para I+D:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                    <li><strong>C10 Nivel de endeudamiento:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item strength">
+                <h3>Fortalezas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>C4 Opciones de financiamiento a corto plazo:</strong>
+                        <span class="key-item-desc">Fortaleza. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                    <li><strong>C16 Solvencia financiera:</strong>
+                        <span class="key-item-desc">Fortaleza.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Capital (Interno)</div>
+        </div>
+
+        <div class="analysis-card capfir-card">
+            <h2>Activos</h2>
+            <div class="summary-counts">
+                <span class="weakness-count">11 Debilidades</span> | <span class="strength-count">9 Fortalezas</span>
+            </div>
+            <div class="key-item weakness">
+                <h3>Debilidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>A2 Modernización de equipos y maquinaria:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                    <li><strong>A8 Bases de datos y gestión de información:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item strength">
+                <h3>Fortalezas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>A15 Capacidades de análisis y big data:</strong>
+                        <span class="key-item-desc">Fortaleza.</span>
+                    </li>
+                    <li><strong>A20 Gestión de obsolescencia de activos:</strong>
+                        <span class="key-item-desc">Fortaleza.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Activos (Interno)</div>
+        </div>
+
+        <div class="analysis-card capfir-card">
+            <h2>Procesos</h2>
+            <div class="summary-counts">
+                <span class="weakness-count">11 Debilidades</span> | <span class="strength-count">9 Fortalezas</span>
+            </div>
+            <div class="key-item weakness">
+                <h3>Debilidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>P1 Eficiencia operativa:</strong>
+                        <span class="key-item-desc">Debilidad.</span>
+                    </li>
+                    <li><strong>P10 Procesos de servicio al cliente:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item strength">
+                <h3>Fortalezas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>P6 Procedimientos de control de calidad:</strong>
+                        <span class="key-item-desc">Fortaleza. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                    <li><strong>P16 Procesos de gestión de proyectos:</strong>
+                        <span class="key-item-desc">Fortaleza. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Procesos (Interno)</div>
+        </div>
+
+        <div class="analysis-card capfir-card">
+            <h2>Fuerza Laboral</h2>
+            <div class="summary-counts">
+                <span class="weakness-count">11 Debilidades</span> | <span class="strength-count">9 Fortalezas</span>
+            </div>
+            <div class="key-item weakness">
+                <h3>Debilidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>F1 Diversidad en el lugar de trabajo:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                    <li><strong>F7 Flexibilidad laboral y políticas de trabajo remoto:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item strength">
+                <h3>Fortalezas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>F6 Salud y seguridad en el trabajo:</strong>
+                        <span class="key-item-desc">Fortaleza.</span>
+                    </li>
+                    <li><strong>F15 Gestión del desempeño:</strong>
+                        <span class="key-item-desc">Fortaleza. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Fuerza Laboral (Interno)</div>
+        </div>
+
+        <div class="analysis-card capfir-card">
+            <h2>Innovación</h2>
+            <div class="summary-counts">
+                <span class="weakness-count">11 Debilidades</span> | <span class="strength-count">9 Fortalezas</span>
+            </div>
+            <div class="key-item weakness">
+                <h3>Debilidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>I1 Inversión en I+D:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                    <li><strong>I9 Capacidad para identificar tendencias de mercado:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item strength">
+                <h3>Fortalezas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>I15 Capacidad de escalabilidad de nuevas ideas:</strong>
+                        <span class="key-item-desc">Fortaleza. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                    <li><strong>I20 Capacidades de análisis predictivo y big data:</strong>
+                        <span class="key-item-desc">Fortaleza.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Innovación (Interno)</div>
+        </div>
+
+        <div class="analysis-card capfir-card">
+            <h2>Relaciones</h2>
+            <div class="summary-counts">
+                <span class="weakness-count">11 Debilidades</span> | <span class="strength-count">9 Fortalezas</span>
+            </div>
+            <div class="key-item weakness">
+                <h3>Debilidades Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>R3 Colaboraciones con proveedores:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                    <li><strong>R9 Vínculos con entidades educativas y académicas:</strong>
+                        <span class="key-item-desc">Debilidad. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="key-item strength">
+                <h3>Fortalezas Clave (Ejemplos):</h3>
+                <ul>
+                    <li><strong>R4 Relaciones con reguladores y entidades gubernamentales:</strong>
+                        <span class="key-item-desc">Fortaleza.</span>
+                    </li>
+                    <li><strong>R19 Relaciones con inversores y accionistas:</strong>
+                        <span class="key-item-desc">Fortaleza. Capacidad de Mejorar: 5 (según tabla).</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">Factor Relaciones (Interno)</div>
+        </div>
+    </div>
+    
+    <hr style="margin: 40px 5%; border: 0; border-top: 2px dashed #007bff;">
+
+    <div class="foda-charts-section-title">Visualización Gráfica FODA</div>
+    <div class="foda-charts-container-wrapper">
+        <div class="foda-chart-container">
+            <h3>Radar de Oportunidades (PESTEL)</h3>
+            <canvas id="opportunitiesRadarChart"></canvas>
+        </div>
+        <div class="foda-chart-container">
+            <h3>Radar de Amenazas (PESTEL)</h3>
+            <canvas id="threatsRadarChart"></canvas>
+        </div>
+        <div class="foda-chart-container">
+            <h3>Radar de Fortalezas (CAPFIR)</h3>
+            <canvas id="strengthsRadarChart"></canvas>
+        </div>
+        <div class="foda-chart-container">
+            <h3>Radar de Debilidades (CAPFIR)</h3>
+            <canvas id="weaknessesRadarChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const pestelLabels = ['Político', 'Económico', 'Social', 'Tecnológico', 'Ecológico', 'Legal'];
+        const opportunitiesPestelData = [7, 10, 11, 11, 6, 4];
+        const threatsPestelData = [13, 10, 9, 4, 9, 16];
+
+        const capfirLabels = ['Capital', 'Activos', 'Procesos', 'Fuerza Laboral', 'Innovación', 'Relaciones'];
+        const strengthsCapfirData = [8, 9, 9, 9, 9, 9]; 
+        const weaknessesCapfirData = [12, 11, 11, 11, 11, 11]; 
+
+        const radarOptionsBase = {
+            responsive: true,
+            maintainAspectRatio: false, 
+            scales: {
+                r: {
+                    angleLines: { display: true, color: '#ced4da'},
+                    ticks: { 
+                        stepSize: 2,
+                        backdropColor: 'rgba(255, 255, 255, 0.75)',
+                        color: '#495057',
+                        font: { size: 9 }
+                    },
+                    pointLabels: {
+                        font: { size: 11, weight: 'bold' }, 
+                        color: '#004a99'
+                    },
+                    grid: { color: '#e0e0e0' } 
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'bottom', 
+                    labels: { font: { size: 12 }, color: '#343a40', padding:15 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed.r !== null) { label += context.parsed.r; }
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+        
+        function createRadarChart(canvasId, chartLabels, dataset) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const maxDataValue = dataset.data ? Math.max(...dataset.data) : 0; // Verificación de data
+            return new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [dataset] 
+                },
+                options: {
+                    ...radarOptionsBase,
+                    scales: {
+                        r: {
+                            ...radarOptionsBase.scales.r,
+                            suggestedMin: 0,
+                            suggestedMax: maxDataValue > 0 ? maxDataValue + Math.ceil(maxDataValue * 0.1 / 2) * 2 : 5 // Asegurar un max > 0
+                        }
+                    }
+                }
+            });
+        }
+
+        // Crear Gráfica de Oportunidades (PESTEL)
+        if (document.getElementById('opportunitiesRadarChart')) {
+            createRadarChart('opportunitiesRadarChart', pestelLabels, {
+                label: 'Oportunidades (PESTEL)',
+                data: opportunitiesPestelData,
+                backgroundColor: 'rgba(40, 167, 69, 0.3)', 
+                borderColor: 'rgba(40, 167, 69, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(40, 167, 69, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(40, 167, 69, 1)'
+            });
+        }
+
+        // Crear Gráfica de Amenazas (PESTEL)
+        if (document.getElementById('threatsRadarChart')) {
+            createRadarChart('threatsRadarChart', pestelLabels, {
+                label: 'Amenazas (PESTEL)',
+                data: threatsPestelData,
+                backgroundColor: 'rgba(220, 53, 69, 0.3)', 
+                borderColor: 'rgba(220, 53, 69, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(220, 53, 69, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(220, 53, 69, 1)'
+            });
+        }
+
+        // Crear Gráfica de Fortalezas (CAPFIR)
+        if (document.getElementById('strengthsRadarChart')) {
+            createRadarChart('strengthsRadarChart', capfirLabels, {
+                label: 'Fortalezas (CAPFIR)',
+                data: strengthsCapfirData,
+                backgroundColor: 'rgba(0, 123, 255, 0.3)', 
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
+            });
+        }
+        
+        // Crear Gráfica de Debilidades (CAPFIR)
+        if (document.getElementById('weaknessesRadarChart')) {
+            createRadarChart('weaknessesRadarChart', capfirLabels, {
+                label: 'Debilidades (CAPFIR)',
+                data: weaknessesCapfirData,
+                backgroundColor: 'rgba(111, 66, 193, 0.3)', 
+                borderColor: 'rgba(111, 66, 193, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(111, 66, 193, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(111, 66, 193, 1)'
+            });
+        }
+    </script>
+
+</body>
+</html>
